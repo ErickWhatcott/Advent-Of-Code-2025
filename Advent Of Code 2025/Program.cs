@@ -57,7 +57,7 @@ foreach (var type in Assembly.GetExecutingAssembly().GetTypes().Where(a => a.Nam
             
             string? input = null;
             if (parameters == 1 && v.GetCustomAttribute<DefineInputAttribute>() is DefineInputAttribute ia)
-                input = Solution.ReadInput(ia.File, year, v.Name);
+                input = Solution.TryReadInput(ia.File, year, v.Name);
 
             Console.WriteLine(new string('-', 19));
             Console.WriteLine($"{new string('-', 3)}Running {v.Name}{new string('-', 3)}");
@@ -101,9 +101,9 @@ foreach (var type in Assembly.GetExecutingAssembly().GetTypes().Where(a => a.Nam
 
         string? input = null;
         if (parameters == 1 && v.GetCustomAttribute<DefineInputAttribute>() is DefineInputAttribute ia)
-            input = Solution.ReadInput(ia.File, year, name);
+            input = Solution.TryReadInput(ia.File, year, name);
         else if (parameters == 1)
-            input = Solution.ReadFullInput(year, name);
+            input = Solution.TryReadFullInput(year, name);
 
         MethodInfoBenchmark.Method = v;
         MethodInfoBenchmark.Instance = null;
