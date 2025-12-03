@@ -3,7 +3,7 @@ namespace AdventOfCode2025;
 public static partial class Solution
 {
     [TimePart]
-    [Completed]
+    // [Completed]
     [DefineInput(InputType.FullInput)]
     public static (int, long) Day03(string? input = null)
     {
@@ -60,24 +60,196 @@ public static partial class Solution
             var line = lines[line_enu.Current];
 
             long res = 0;
-            for (int i = 11; i >= 0; i--)
+
+            int pos = -1;
+            char max_digit = '0';
+
+            for (int j = 0; j < line.Length - 11; j++)
             {
-                int pos = -1;
-                char max_digit = '0';
-
-                for (int j = 0; j < line.Length - i; j++)
+                if (line[j] > max_digit)
                 {
-                    if (line[j] > max_digit)
-                    {
-                        max_digit = line[j];
-                        pos = j;
-                    }
+                    max_digit = line[j];
+                    pos = j;
                 }
-
-                res *= 10;
-                res += max_digit - '0';
-                line = line[(pos + 1)..];
             }
+
+            res += max_digit - '0';
+            line = line[(pos + 1)..];
+
+            pos = -1;
+            max_digit = '0';
+
+            for (int j = 0; j < line.Length - 10; j++)
+            {
+                if (line[j] > max_digit)
+                {
+                    max_digit = line[j];
+                    pos = j;
+                }
+            }
+
+            res *= 10;
+            res += max_digit - '0';
+            line = line[(pos + 1)..];
+
+            pos = -1;
+            max_digit = '0';
+
+            for (int j = 0; j < line.Length - 9; j++)
+            {
+                if (line[j] > max_digit)
+                {
+                    max_digit = line[j];
+                    pos = j;
+                }
+            }
+
+            res *= 10;
+            res += max_digit - '0';
+            line = line[(pos + 1)..];
+
+            pos = -1;
+            max_digit = '0';
+
+            for (int j = 0; j < line.Length - 8; j++)
+            {
+                if (line[j] > max_digit)
+                {
+                    max_digit = line[j];
+                    pos = j;
+                }
+            }
+
+            res *= 10;
+            res += max_digit - '0';
+            line = line[(pos + 1)..];
+
+            pos = -1;
+            max_digit = '0';
+
+            for (int j = 0; j < line.Length - 7; j++)
+            {
+                if (line[j] > max_digit)
+                {
+                    max_digit = line[j];
+                    pos = j;
+                }
+            }
+
+            res *= 10;
+            res += max_digit - '0';
+            line = line[(pos + 1)..];
+
+            pos = -1;
+            max_digit = '0';
+
+            for (int j = 0; j < line.Length - 6; j++)
+            {
+                if (line[j] > max_digit)
+                {
+                    max_digit = line[j];
+                    pos = j;
+                }
+            }
+
+            res *= 10;
+            res += max_digit - '0';
+            line = line[(pos + 1)..];
+
+            pos = -1;
+            max_digit = '0';
+
+            for (int j = 0; j < line.Length - 5; j++)
+            {
+                if (line[j] > max_digit)
+                {
+                    max_digit = line[j];
+                    pos = j;
+                }
+            }
+
+            res *= 10;
+            res += max_digit - '0';
+            line = line[(pos + 1)..];
+
+            pos = -1;
+            max_digit = '0';
+
+            for (int j = 0; j < line.Length - 4; j++)
+            {
+                if (line[j] > max_digit)
+                {
+                    max_digit = line[j];
+                    pos = j;
+                }
+            }
+
+            res *= 10;
+            res += max_digit - '0';
+            line = line[(pos + 1)..];
+
+            pos = -1;
+            max_digit = '0';
+
+            for (int j = 0; j < line.Length - 3; j++)
+            {
+                if (line[j] > max_digit)
+                {
+                    max_digit = line[j];
+                    pos = j;
+                }
+            }
+
+            res *= 10;
+            res += max_digit - '0';
+            line = line[(pos + 1)..];
+
+            pos = -1;
+            max_digit = '0';
+
+            for (int j = 0; j < line.Length - 2; j++)
+            {
+                if (line[j] > max_digit)
+                {
+                    max_digit = line[j];
+                    pos = j;
+                }
+            }
+
+            res *= 10;
+            res += max_digit - '0';
+            line = line[(pos + 1)..];
+
+            pos = -1;
+            max_digit = '0';
+
+            for (int j = 0; j < line.Length - 1; j++)
+            {
+                if (line[j] > max_digit)
+                {
+                    max_digit = line[j];
+                    pos = j;
+                }
+            }
+
+            res *= 10;
+            res += max_digit - '0';
+            line = line[(pos + 1)..];
+
+            pos = -1;
+            max_digit = '0';
+
+            for (int j = 0; j < line.Length - 0; j++)
+            {
+                if (line[j] > max_digit)
+                {
+                    max_digit = line[j];
+                    pos = j;
+                }
+            }
+
+            res *= 10;
+            res += max_digit - '0';
 
             sum += res;
         }
