@@ -1,4 +1,4 @@
-namespace AdventOfCode2025;
+namespace AdventOfCode;
 
 [AttributeUsage(AttributeTargets.Method)]
 public class DefineInputAttribute : Attribute

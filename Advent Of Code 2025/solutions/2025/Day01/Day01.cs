@@ -1,6 +1,6 @@
-namespace AdventOfCode2025;
+namespace AdventOfCode;
 
-public static partial class Solution
+public static partial class Solution2025
 {
     [Completed]
     [DefineInput(InputType.FullInput)]

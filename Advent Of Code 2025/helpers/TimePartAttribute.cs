@@ -1,3 +1,3 @@
-namespace AdventOfCode2025;
+namespace AdventOfCode;
 
 public class TimePartAttribute : Attribute;

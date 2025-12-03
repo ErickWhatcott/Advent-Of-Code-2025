@@ -1,4 +1,4 @@
-namespace AdventOfCode2025;
+namespace AdventOfCode;
 
 public enum InputType
 {

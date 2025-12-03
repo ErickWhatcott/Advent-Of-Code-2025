@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using BenchmarkDotNet.Reports;
 
-namespace AdventOfCode2025
+namespace AdventOfCode
 {
     public class InterpretBenchmark
     {
