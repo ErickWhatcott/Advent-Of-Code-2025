@@ -10,7 +10,7 @@ public static partial class Solution
         input ??= ReadFullInput();
         return (Part1Day03(input), Part2Day03(input));
     }
-    
+
     public static int Part1Day03(string input)
     {
         int sum = 0;
@@ -51,7 +51,6 @@ public static partial class Solution
 
     public static long Part2Day03(string input)
     {
-        checked{
         long sum = 0;
 
         var lines = input.AsSpan();
@@ -61,11 +60,11 @@ public static partial class Solution
             var line = lines[line_enu.Current];
 
             long res = 0;
-            for(int i = 11; i >= 0; i--)
+            for (int i = 11; i >= 0; i--)
             {
                 int pos = -1;
                 char max_digit = '0';
-                
+
                 for (int j = 0; j < line.Length - i; j++)
                 {
                     if (line[j] > max_digit)
@@ -77,13 +76,12 @@ public static partial class Solution
 
                 res *= 10;
                 res += max_digit - '0';
-                line = line[(pos+1)..];
+                line = line[(pos + 1)..];
             }
-            
+
             sum += res;
         }
 
         return sum;
-        }
     }
 }

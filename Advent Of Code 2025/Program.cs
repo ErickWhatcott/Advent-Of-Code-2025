@@ -48,15 +48,6 @@ foreach (var v in methods.Where(a => a.Name.StartsWith("Day")))
     }
 }
 
-
-// var config = ManualConfig.CreateEmpty()
-//     .AddJob(Job.Default)
-//     .WithOptions(
-//         // ConfigOptions.DisableLogFile |
-//         ConfigOptions.DisableOptimizationsValidator |
-//         ConfigOptions.StopOnFirstError
-//     ).AddLogger(ConsoleLogger.Default);
-
 var config = ManualConfig.CreateEmpty()
     .WithOptions(
         ConfigOptions.DisableOptimizationsValidator |
