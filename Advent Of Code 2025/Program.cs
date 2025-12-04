@@ -41,8 +41,10 @@ foreach (var type in Assembly.GetExecutingAssembly().GetTypes().Where(a => a.Nam
             continue;
 
 
-        if (v.GetCustomAttribute<RunAlwaysAttribute>() is RunAlwaysAttribute raa
-            || (day == DateTime.Today.Day && year_num == DateTime.Today.Year && v.GetCustomAttribute<CompletedAttribute>() is null))
+        // if (v.GetCustomAttribute<RunAlwaysAttribute>() is RunAlwaysAttribute raa
+        //     || (day == DateTime.Today.Day && year_num == DateTime.Today.Year && v.GetCustomAttribute<CompletedAttribute>() is null))
+        if(v.GetCustomAttribute<RunAlwaysAttribute>() is not null
+            || v.GetCustomAttribute<CompletedAttribute>() is null)
         {
             if(first)
             {

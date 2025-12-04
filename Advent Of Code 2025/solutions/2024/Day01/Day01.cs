@@ -2,7 +2,7 @@ namespace AdventOfCode;
 
 public static partial class Solution2024
 {
-    [RunAlways]
+    [Completed]
     [DefineInput(InputType.FullInput)]
     public static (int, int) Day01(string? input = null)
     {
