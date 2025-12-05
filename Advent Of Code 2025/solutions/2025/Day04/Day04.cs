@@ -2,7 +2,7 @@ namespace AdventOfCode;
 
 public static partial class Solution2025
 {
-    [TimePart]
+    [Completed]
     [DefineInput(InputType.FullInput)]
     public static (int, int) Day04(string? input = null)
     {
@@ -10,12 +10,11 @@ public static partial class Solution2025
         return (Part1Day04(input), Part2Day04(input));
     }
 
-    [TimePart]
     public static int Part1Day04(string input)
     {
         int accessible = 0;
 
-        var span = input.AsSpan();;
+        var span = input.AsSpan(); ;
         int width = span.IndexOf('\n');
         int height = (span.Length / width) - 1;
 
@@ -75,7 +74,6 @@ public static partial class Solution2025
         return accessible;
     }
 
-    [TimePart]
     public static unsafe int Part2Day04(string input)
     {
         int accessible = 0;
@@ -150,8 +148,8 @@ public static partial class Solution2025
                     }
                 }
             } while (removed > 0);
-
-            return accessible;
         }
+
+        return accessible;
     }
 }
