@@ -41,8 +41,6 @@ foreach (var type in Assembly.GetExecutingAssembly().GetTypes().Where(a => a.Nam
             continue;
 
 
-        // if (v.GetCustomAttribute<RunAlwaysAttribute>() is RunAlwaysAttribute raa
-        //     || (day == DateTime.Today.Day && year_num == DateTime.Today.Year && v.GetCustomAttribute<CompletedAttribute>() is null))
         if(v.GetCustomAttribute<RunAlwaysAttribute>() is not null
             || v.GetCustomAttribute<CompletedAttribute>() is null)
         {
@@ -64,7 +62,10 @@ foreach (var type in Assembly.GetExecutingAssembly().GetTypes().Where(a => a.Nam
             Console.WriteLine(new string('-', 19));
             Console.WriteLine($"{new string('-', 3)}Running {v.Name}{new string('-', 3)}");
             Console.WriteLine(new string('-', 19));
+
+            color = Console.ForegroundColor;
             var res = v.Invoke(null, input is null ? [] : [input]);
+            Console.ForegroundColor = color;
             if (res is not null)
                 Console.WriteLine(res);
             Console.WriteLine(new string('-', 19));
@@ -125,8 +126,10 @@ foreach (var type in Assembly.GetExecutingAssembly().GetTypes().Where(a => a.Nam
         Console.ForegroundColor = color;
 #endif
 
-
+        color = Console.ForegroundColor;
         var summary = BenchmarkRunner.Run<MethodInfoBenchmark>(config);
+        Console.ForegroundColor = color;
+
         var report = new InterpretBenchmark(summary);
 
         if (report.Errors is string[] str && str.Length > 0)
