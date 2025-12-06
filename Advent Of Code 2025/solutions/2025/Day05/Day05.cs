@@ -1,11 +1,12 @@
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace AdventOfCode;
 
 public static partial class Solution2025
 {
     [TimePart]
-    [Completed]
+    // [Completed]
     [DefineInput(InputType.FullInput)]
     public static (int, long) Day05(string? input = null)
     {
@@ -16,7 +17,7 @@ public static partial class Solution2025
     [TimePart]
     public static int Part1Day05(string input)
     {
-        List<(long start, long end)> ranges = [];
+        LinkedList<(long start, long end)> ranges = [];
 
         var lines = input.AsSpan();
         var line_enu = lines.Split('\n');
@@ -27,8 +28,34 @@ public static partial class Solution2025
             if (line.IsEmpty) break;
 
             var index = line.IndexOf('-');
-            ranges.Add((long.Parse(line[..index]), long.Parse(line[(index + 1)..])));
+            long l1 = long.Parse(line[..index]);
+            long l2 = long.Parse(line[(index + 1)..]);
+
+            LinkedListNode<(long, long)>? node = ranges.First;
+            while (node != null)
+            {
+                var next = node.Next;
+
+                var (start, end) = node.Value;
+                var start_dif = Math.Max(start, l1);
+                var end_dif = Math.Min(end, l2);
+
+                if (start_dif <= end_dif)
+                {
+                    l1 = Math.Min(start, l1);
+                    l2 = Math.Max(end, l2);
+
+                    ranges.Remove(node);
+                }
+
+                node = next;
+            }
+
+            ranges.AddFirst((l1, l2));
         }
+
+        var arr = ranges.ToArray();
+        Array.Sort(arr);
 
         int fresh = 0;
         while (line_enu.MoveNext())
@@ -36,18 +63,37 @@ public static partial class Solution2025
             var line = lines[line_enu.Current];
             var curr = long.Parse(line);
 
-            for (int i = 0; i < ranges.Count; i++)
-            {
-                var (start, end) = ranges[i];
-                if (start <= curr && curr <= end)
-                {
-                    fresh++;
-                    break;
-                }
-            }
+            var start = FindStart(arr, curr);
+            if(start) fresh++;
         }
 
         return fresh;
+    }
+
+    // Does a binary search to find the range that contains value.
+    private static bool FindStart((long start, long end)[] arr, long value)
+    {
+        // Literally just copy-paste of wikipedia:
+        // https://en.wikipedia.org/wiki/Binary_search
+        int N = arr.Length;
+
+        int M;
+        int L = 0;
+        int R = N - 1;
+
+        while(L <= R)
+        {
+            M = L + ((R - L) / 2);
+
+            if(arr[M].end < value)
+                L = M + 1;
+            else if(arr[M].start > value)
+                R = M - 1;
+            else
+                return true;
+        }
+
+        return false;
     }
 
     [TimePart]
