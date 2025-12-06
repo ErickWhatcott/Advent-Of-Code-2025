@@ -5,8 +5,7 @@ namespace AdventOfCode;
 
 public static partial class Solution2025
 {
-    [TimePart]
-    // [Completed]
+    [Completed]
     [DefineInput(InputType.FullInput)]
     public static (int, long) Day05(string? input = null)
     {
@@ -14,7 +13,6 @@ public static partial class Solution2025
         return (Part1Day05(input), Part2Day05(input));
     }
 
-    [TimePart]
     public static int Part1Day05(string input)
     {
         LinkedList<(long start, long end)> ranges = [];
@@ -63,40 +61,13 @@ public static partial class Solution2025
             var line = lines[line_enu.Current];
             var curr = long.Parse(line);
 
-            var start = FindStart(arr, curr);
-            if(start) fresh++;
+            var start = Day05_FindStart(arr, curr);
+            if (start) fresh++;
         }
 
         return fresh;
     }
 
-    // Does a binary search to find the range that contains value.
-    private static bool FindStart((long start, long end)[] arr, long value)
-    {
-        // Literally just copy-paste of wikipedia:
-        // https://en.wikipedia.org/wiki/Binary_search
-        int N = arr.Length;
-
-        int M;
-        int L = 0;
-        int R = N - 1;
-
-        while(L <= R)
-        {
-            M = L + ((R - L) / 2);
-
-            if(arr[M].end < value)
-                L = M + 1;
-            else if(arr[M].start > value)
-                R = M - 1;
-            else
-                return true;
-        }
-
-        return false;
-    }
-
-    [TimePart]
     public static long Part2Day05(string input)
     {
         LinkedList<(long start, long end)> ranges = [];
@@ -112,7 +83,7 @@ public static partial class Solution2025
             if (line.IsEmpty) break;
 
             int index = line.IndexOf('-');
-            
+
 
             long l1 = long.Parse(line[..index]);
             long l2 = long.Parse(line[(index + 1)..]);
@@ -149,5 +120,31 @@ public static partial class Solution2025
         }
 
         return total;
+    }
+
+    // Does a binary search to find the range that contains value.
+    private static bool Day05_FindStart((long start, long end)[] arr, long value)
+    {
+        // Literally just copy-paste of wikipedia:
+        // https://en.wikipedia.org/wiki/Binary_search
+        int N = arr.Length;
+
+        int M;
+        int L = 0;
+        int R = N - 1;
+
+        while (L <= R)
+        {
+            M = L + ((R - L) / 2);
+
+            if (arr[M].end < value)
+                L = M + 1;
+            else if (arr[M].start > value)
+                R = M - 1;
+            else
+                return true;
+        }
+
+        return false;
     }
 }
