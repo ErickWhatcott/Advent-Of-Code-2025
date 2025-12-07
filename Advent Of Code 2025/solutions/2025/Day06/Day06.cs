@@ -26,21 +26,19 @@ public static partial class Solution2025
         Span<long> results = stackalloc long[i];
 
         i = 0;
-        var enu = operands.Split(' ');
-        while (enu.MoveNext())
+        
+        do
         {
-            if ((enu.Current.End.Value - enu.Current.Start.Value) != 0)
-            {
-                results[i] = (should_multiply[i] = operands[enu.Current.Start] == '*') ? 1 : 0;
-                i++;
-            }
-        }
+            results[i] = (should_multiply[i] = operands[0] == '*') ? 1 : 0;
+            operands = operands[1..].TrimStart();
+            i++;
+        }while(operands.Length > 0);
 
         var line_enu = lines.Split('\n');
         while (line_enu.MoveNext())
         {
             var line = lines[line_enu.Current];
-            enu = line.Split(' ');
+            var enu = line.Split(' ');
             i = 0;
 
             while (enu.MoveNext())
@@ -75,16 +73,18 @@ public static partial class Solution2025
         Span<(int offset, int value1, int value2, int value3, int value4)> results = stackalloc (int, int, int, int, int)[i];
 
         i = 0;
-        var enu = operands.Split(' ');
-        while (enu.MoveNext())
+        int start = 0;
+        do
         {
-            if ((enu.Current.End.Value - enu.Current.Start.Value) != 0)
-            {
-                results[i] = (enu.Current.Start.Value, 0, 0, 0, 0);
-                should_multiply[i] = operands[enu.Current.Start] == '*';
-                i++;
-            }
-        }
+            results[i] = (start, 0, 0, 0, 0);
+            should_multiply[i] = operands[0] == '*';
+            
+            var temp = operands[1..].TrimStart();
+            start += operands.Length - temp.Length;
+            operands = temp;
+
+            i++;
+        }while(operands.Length > 0);
 
         fixed (void* p = results)
         {
@@ -92,18 +92,18 @@ public static partial class Solution2025
             while (line_enu.MoveNext())
             {
                 var line = lines[line_enu.Current];
-                enu = line.Split(' ');
+                var enu = line.Split(' ');
                 (int, int, int, int, int)* pt = ((int, int, int, int, int)*)p;
 
                 while (enu.MoveNext())
                 {
-                    uint start = (uint)enu.Current.Start.Value;
+                    start = enu.Current.Start.Value;
                     if ((enu.Current.End.Value - start) != 0)
                     {
                         var num = line[enu.Current].Trim();
                         uint curr = uint.Parse(num);
                         uint* ptr = (uint*)pt;
-                        uint offset = start - (*ptr) + 1;
+                        uint offset = ((uint)start) - (*ptr) + 1;
                         ptr += offset;
 
                         switch (num.Length)
