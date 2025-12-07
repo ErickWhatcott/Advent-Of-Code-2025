@@ -7,7 +7,7 @@ namespace AdventOfCode;
 
 public static partial class Solution2025
 {
-    [TimePart]
+    [Completed]
     [DefineInput(InputType.FullInput)]
     public static (int, long) Day07(string? input = null)
     {
@@ -15,7 +15,6 @@ public static partial class Solution2025
         return (Part1Day07(input), Part2Day07(input));
     }
 
-    [TimePart]
     public static int Part1Day07(string input)
     {
         var lines = input.AsSpan();
@@ -60,7 +59,6 @@ public static partial class Solution2025
         return count;
     }
 
-    [TimePart]
     public static long Part2Day07(string input)
     {
         var lines = input.AsSpan();
