@@ -20,19 +20,13 @@ public static partial class Solution2025
         var operands = lines[(index + 1)..];
         lines = lines[..index];
 
-        int i = 0;
-        var enu = operands.Split(' ');
-        while (enu.MoveNext())
-        {
-            if ((enu.Current.End.Value - enu.Current.Start.Value) != 0)
-                i++;
-        }
+        int i = operands.Length - operands.Count(' ');
 
         Span<bool> should_multiply = stackalloc bool[i];
         Span<long> results = stackalloc long[i];
 
         i = 0;
-        enu = operands.Split(' ');
+        var enu = operands.Split(' ');
         while (enu.MoveNext())
         {
             if ((enu.Current.End.Value - enu.Current.Start.Value) != 0)
@@ -75,19 +69,13 @@ public static partial class Solution2025
         var operands = lines[(index + 1)..];
         lines = lines[..index];
 
-        int i = 0;
-        var enu = operands.Split(' ');
-        while (enu.MoveNext())
-        {
-            if ((enu.Current.End.Value - enu.Current.Start.Value) != 0)
-                i++;
-        }
+        int i = operands.Length - operands.Count(' ');
 
         Span<bool> should_multiply = stackalloc bool[i];
         Span<(int offset, int value1, int value2, int value3, int value4)> results = stackalloc (int, int, int, int, int)[i];
 
         i = 0;
-        enu = operands.Split(' ');
+        var enu = operands.Split(' ');
         while (enu.MoveNext())
         {
             if ((enu.Current.End.Value - enu.Current.Start.Value) != 0)
@@ -105,42 +93,42 @@ public static partial class Solution2025
             {
                 var line = lines[line_enu.Current];
                 enu = line.Split(' ');
-                i = 0;
+                (int, int, int, int, int)* pt = ((int, int, int, int, int)*)p;
 
                 while (enu.MoveNext())
                 {
-                    int start = enu.Current.Start.Value;
+                    uint start = (uint)enu.Current.Start.Value;
                     if ((enu.Current.End.Value - start) != 0)
                     {
                         var num = line[enu.Current].Trim();
-                        int curr = int.Parse(num);
-                        int offset = start - results[i].offset + 1;
-                        int* ptr = (int*)((((int, int, int, int, int)*)p) + i);
-                        int log10 = num.Length;
+                        uint curr = uint.Parse(num);
+                        uint* ptr = (uint*)pt;
+                        uint offset = start - (*ptr) + 1;
+                        ptr += offset;
 
-                        switch (log10)
+                        switch (num.Length)
                         {
                             case 4:
-                                *(ptr + offset) = 10 * (*(ptr + offset)) + ((curr / 1000) % 10);
-                                offset++;
+                                *(ptr) = 10 * (*(ptr)) + ((curr / 1000) % 10);
+                                ptr++;
                                 goto case 3;
                             
                             case 3:
-                                *(ptr + offset) = 10 * (*(ptr + offset)) + ((curr / 100) % 10);
-                                offset++;
+                                *(ptr) = 10 * (*(ptr)) + ((curr / 100) % 10);
+                                ptr++;
                                 goto case 2;
 
                             case 2:
-                                *(ptr + offset) = 10 * (*(ptr + offset)) + ((curr / 10) % 10);
-                                offset++;
+                                *(ptr) = 10 * (*(ptr)) + ((curr / 10) % 10);
+                                ptr++;
                                 goto case 1;
                             
                             case 1:
-                                *(ptr + offset) = 10 * (*(ptr + offset)) + (curr % 10);
+                                *(ptr) = 10 * (*(ptr)) + (curr % 10);
                                 break;
                         }
 
-                        i++;
+                        pt++;
                     }
                 }
             }
