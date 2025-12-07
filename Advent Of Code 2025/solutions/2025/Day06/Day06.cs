@@ -92,44 +92,48 @@ public static partial class Solution2025
             while (line_enu.MoveNext())
             {
                 var line = lines[line_enu.Current];
-                var enu = line.Split(' ');
-                (int, int, int, int, int)* pt = ((int, int, int, int, int)*)p;
-
-                while (enu.MoveNext())
+                fixed (char* reference = line)
                 {
-                    start = enu.Current.Start.Value;
-                    if ((enu.Current.End.Value - start) != 0)
+                    (int, int, int, int, int)* pt = ((int, int, int, int, int)*)p;
+
+                    do
                     {
-                        var num = line[enu.Current].Trim();
-                        uint curr = uint.Parse(num);
-                        uint* ptr = (uint*)pt;
-                        uint offset = ((uint)start) - (*ptr) + 1;
-                        ptr += offset;
-
-                        switch (num.Length)
+                        fixed (char* actual = line)
                         {
-                            case 4:
-                                *(ptr) = 10 * (*(ptr)) + ((curr / 1000) % 10);
-                                ptr++;
-                                goto case 3;
+                            index = line.IndexOf(' ');
 
-                            case 3:
-                                *(ptr) = 10 * (*(ptr)) + ((curr / 100) % 10);
-                                ptr++;
-                                goto case 2;
+                            var num = line[..(index == -1 ? line.Length : index)];
+                            uint curr = uint.Parse(num);
+                            uint* ptr = (uint*)pt;
+                            uint offset = ((uint)(actual - reference)) - (*ptr) + 1;
+                            ptr += offset;
 
-                            case 2:
-                                *(ptr) = 10 * (*(ptr)) + ((curr / 10) % 10);
-                                ptr++;
-                                goto case 1;
+                            switch (num.Length)
+                            {
+                                case 4:
+                                    *(ptr) = 10 * (*(ptr)) + ((curr / 1000) % 10);
+                                    ptr++;
+                                    goto case 3;
 
-                            case 1:
-                                *(ptr) = 10 * (*(ptr)) + (curr % 10);
-                                break;
+                                case 3:
+                                    *(ptr) = 10 * (*(ptr)) + ((curr / 100) % 10);
+                                    ptr++;
+                                    goto case 2;
+
+                                case 2:
+                                    *(ptr) = 10 * (*(ptr)) + ((curr / 10) % 10);
+                                    ptr++;
+                                    goto case 1;
+
+                                case 1:
+                                    *(ptr) = 10 * (*(ptr)) + (curr % 10);
+                                    break;
+                            }
+
+                            line = line[(index + 1)..].TrimStart(' ');
+                            pt++;
                         }
-
-                        pt++;
-                    }
+                    } while (index != -1);
                 }
             }
         }
