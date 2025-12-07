@@ -26,30 +26,30 @@ public static partial class Solution2025
         Span<long> results = stackalloc long[i];
 
         i = 0;
-        
+
         do
         {
             results[i] = (should_multiply[i] = operands[0] == '*') ? 1 : 0;
             operands = operands[1..].TrimStart();
             i++;
-        }while(operands.Length > 0);
+        } while (operands.Length > 0);
 
         var line_enu = lines.Split('\n');
         while (line_enu.MoveNext())
         {
-            var line = lines[line_enu.Current];
-            var enu = line.Split(' ');
+            var line = lines[line_enu.Current].Trim(' ');
             i = 0;
 
-            while (enu.MoveNext())
+            do
             {
-                if ((enu.Current.End.Value - enu.Current.Start.Value) != 0)
-                {
-                    int curr = int.Parse(line[enu.Current]);
-                    results[i] = should_multiply[i] ? (results[i] * curr) : (results[i] + curr);
-                    i++;
-                }
-            }
+                index = line.IndexOf(' ');
+
+                int curr = int.Parse(line[..(index == -1 ? line.Length : index)]);
+                results[i] = should_multiply[i] ? (results[i] * curr) : (results[i] + curr);
+
+                line = line[(index + 1)..].TrimStart(' ');
+                i++;
+            } while (index != -1);
         }
 
         long sum = 0;
@@ -78,13 +78,13 @@ public static partial class Solution2025
         {
             results[i] = (start, 0, 0, 0, 0);
             should_multiply[i] = operands[0] == '*';
-            
+
             var temp = operands[1..].TrimStart();
             start += operands.Length - temp.Length;
             operands = temp;
 
             i++;
-        }while(operands.Length > 0);
+        } while (operands.Length > 0);
 
         fixed (void* p = results)
         {
@@ -112,7 +112,7 @@ public static partial class Solution2025
                                 *(ptr) = 10 * (*(ptr)) + ((curr / 1000) % 10);
                                 ptr++;
                                 goto case 3;
-                            
+
                             case 3:
                                 *(ptr) = 10 * (*(ptr)) + ((curr / 100) % 10);
                                 ptr++;
@@ -122,7 +122,7 @@ public static partial class Solution2025
                                 *(ptr) = 10 * (*(ptr)) + ((curr / 10) % 10);
                                 ptr++;
                                 goto case 1;
-                            
+
                             case 1:
                                 *(ptr) = 10 * (*(ptr)) + (curr % 10);
                                 break;
@@ -137,7 +137,7 @@ public static partial class Solution2025
         long sum = 0;
         for (i = 0; i < results.Length; i++)
         {
-            switch(should_multiply[i])
+            switch (should_multiply[i])
             {
                 case true:
                     sum += Math.Max(results[i].value1, 1L)
