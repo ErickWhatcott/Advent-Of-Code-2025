@@ -1,10 +1,13 @@
 using System.Diagnostics;
+using System.Numerics;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace AdventOfCode;
 
 public static partial class Solution2025
 {
-    [TimePart]
+    [Completed]
     [DefineInput(InputType.FullInput)]
     public static (long, long) Day06(string? input = null)
     {
@@ -12,7 +15,6 @@ public static partial class Solution2025
         return (Part1Day06(input), Part2Day06(input));
     }
 
-    [TimePart]
     public static long Part1Day06(string input)
     {
         var lines = input.AsSpan();
@@ -37,29 +39,29 @@ public static partial class Solution2025
         var line_enu = lines.Split('\n');
         while (line_enu.MoveNext())
         {
+            int curr;
             var line = lines[line_enu.Current].Trim(' ');
             i = 0;
 
-            do
-            {
-                index = line.IndexOf(' ');
+            index = line.IndexOf(' ');
 
-                int curr = int.Parse(line[..(index == -1 ? line.Length : index)]);
+            while (index != -1)
+            {
+                curr = int.Parse(line[..index]);
                 results[i] = should_multiply[i] ? (results[i] * curr) : (results[i] + curr);
 
                 line = line[(index + 1)..].TrimStart(' ');
+                index = line.IndexOf(' ');
                 i++;
-            } while (index != -1);
+            }
+
+            curr = int.Parse(line);
+            results[i] = should_multiply[i] ? (results[i] * curr) : (results[i] + curr);
         }
 
-        long sum = 0;
-        for (i = 0; i < results.Length; i++)
-            sum += results[i];
-
-        return sum;
+        return Day06_Sum(results);
     }
 
-    [TimePart]
     public static unsafe long Part2Day06(string input)
     {
         var lines = input.AsSpan();
@@ -111,22 +113,22 @@ public static partial class Solution2025
                             switch (num.Length)
                             {
                                 case 4:
-                                    *(ptr) = 10 * (*(ptr)) + ((curr / 1000) % 10);
+                                    *ptr = 10 * (*ptr) + ((curr / 1000) % 10);
                                     ptr++;
                                     goto case 3;
 
                                 case 3:
-                                    *(ptr) = 10 * (*(ptr)) + ((curr / 100) % 10);
+                                    *ptr = 10 * (*ptr) + ((curr / 100) % 10);
                                     ptr++;
                                     goto case 2;
 
                                 case 2:
-                                    *(ptr) = 10 * (*(ptr)) + ((curr / 10) % 10);
+                                    *ptr = 10 * (*ptr) + ((curr / 10) % 10);
                                     ptr++;
                                     goto case 1;
 
                                 case 1:
-                                    *(ptr) = 10 * (*(ptr)) + (curr % 10);
+                                    *ptr = 10 * (*ptr) + (curr % 10);
                                     break;
                             }
 
@@ -162,5 +164,67 @@ public static partial class Solution2025
         }
 
         return sum;
+    }
+
+    // Copying the source code for IEnumerable.Sum
+    // (Minus things like overflow checks because that's for nerds)
+    // https://github.com/dotnet/runtime/blob/main/src/libraries/System.Linq/src/System/Linq/Sum.cs
+    private static long Day06_Sum(Span<long> results)
+    {
+        ref long ptr = ref MemoryMarshal.GetReference(results);
+
+        nuint length = (nuint)results.Length;
+        Vector<long> accumulator = Vector<long>.Zero;
+
+        nuint index = 0;
+        nuint limit = length - (nuint)Vector<long>.Count * 4;
+        do
+        {
+            // Switch accumulators with each step to avoid an additional move operation
+            Vector<long> data = Vector.LoadUnsafe(ref ptr, index);
+            Vector<long> accumulator2 = accumulator + data;
+
+            data = Vector.LoadUnsafe(ref ptr, index + (nuint)Vector<long>.Count);
+            accumulator = accumulator2 + data;
+
+            data = Vector.LoadUnsafe(ref ptr, index + (nuint)Vector<long>.Count * 2);
+            accumulator2 = accumulator + data;
+
+            data = Vector.LoadUnsafe(ref ptr, index + (nuint)Vector<long>.Count * 3);
+            accumulator = accumulator2 + data;
+
+            index += (nuint)Vector<long>.Count * 4;
+        } while (index < limit);
+
+        // Process remaining vectors, if any, without unrolling
+        limit = length - (nuint)Vector<long>.Count;
+        if (index < limit)
+        {
+            do
+            {
+                Vector<long> data = Vector.LoadUnsafe(ref ptr, index);
+                Vector<long> accumulator2 = accumulator + data;
+                accumulator = accumulator2;
+
+                index += (nuint)Vector<long>.Count;
+            } while (index < limit);
+        }
+
+        // Add the elements in the vector horizontally.
+        // Vector.Sum doesn't perform overflow checking, instead add elements individually.
+        long result = 0L;
+        for (int i = 0; i < Vector<long>.Count; i++)
+        {
+            result += accumulator[i];
+        }
+
+        // Add any remaining elements
+        while (index < length)
+        {
+            result += Unsafe.Add(ref ptr, index);
+            index++;
+        }
+
+        return result;
     }
 }
