@@ -60,43 +60,46 @@ public static partial class Solution2025
     public static int Part1Day07(string input)
     {
         var lines = input.AsSpan();
-        var line_enu = lines.Split('\n');
-        line_enu.MoveNext();
+        var length = lines.IndexOf('\n');
+        var stride = (length + 1) * 2;
 
-        var line = lines[line_enu.Current];
-        Span<bool> curr = stackalloc bool[line.Length];
-        Span<bool> next = stackalloc bool[line.Length];
-
-        next.Clear();
-
-        for (int i = 0; i < line.Length; i++)
-            curr[i] = line[i] == 'S';
+        Span<bool> curr = stackalloc bool[length];
+        Span<bool> next = stackalloc bool[length];
 
         int count = 0;
-        while (line_enu.MoveNext())
+        curr[lines.IndexOf('S')] = true;
+                
+        do
         {
-            line = lines[line_enu.Current];
-            for (int i = 0; i < line.Length; i++)
+            lines = lines[stride..];
+
+            for (int i = 0; i < length; i++)
             {
-                if (line[i] == '^' && curr[i])
+                if (!curr[i])
+                    continue;
+
+                if (lines[i] == '^')
                 {
                     next[i - 1] = true;
                     next[i + 1] = true;
 
+                    curr[i] = false;
+                    curr[i + 1] = false;
+
                     count++;
+                    i++;
                 }
                 else
                 {
                     next[i] |= curr[i];
+                    curr[i] = false;
                 }
-
-                curr[i] = false;
             }
 
             var temp = curr;
             curr = next;
             next = temp;
-        }
+        }while (lines.Length > stride);
 
         return count;
     }
@@ -104,40 +107,44 @@ public static partial class Solution2025
     public static long Part2Day07(string input)
     {
         var lines = input.AsSpan();
-        var line_enu = lines.Split('\n');
-        line_enu.MoveNext();
+        var length = lines.IndexOf('\n');
+        var stride = (length + 1) * 2;
 
-        var line = lines[line_enu.Current];
-        Span<long> curr = stackalloc long[line.Length];
-        Span<long> next = stackalloc long[line.Length];
+        Span<long> curr = stackalloc long[length];
+        Span<long> next = stackalloc long[length];
 
-        next.Clear();
-
-        for (int i = 0; i < line.Length; i++)
-            curr[i] = line[i] == 'S' ? 1 : 0;
-
-        while (line_enu.MoveNext())
+        curr[lines.IndexOf('S')] = 1;
+                
+        do
         {
-            line = lines[line_enu.Current];
-            for (int i = 0; i < line.Length; i++)
+            lines = lines[stride..];
+
+            for (int i = 0; i < length; i++)
             {
-                if (line[i] == '^')
+                if (curr[i] == 0)
+                    continue;
+
+                if (lines[i] == '^')
                 {
                     next[i - 1] += curr[i];
-                    next[i + 1] += curr[i];
+                    next[i + 1] = curr[i] + curr[i + 1];
+
+                    curr[i] = 0;
+                    curr[i + 1] = 0;
+
+                    i++;
                 }
                 else
                 {
                     next[i] += curr[i];
+                    curr[i] = 0;
                 }
-
-                curr[i] = 0;
             }
 
             var temp = curr;
             curr = next;
             next = temp;
-        }
+        }while (lines.Length > stride);
 
         return Day06_Sum(curr);
     }
