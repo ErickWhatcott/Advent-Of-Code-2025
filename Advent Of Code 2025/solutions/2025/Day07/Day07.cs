@@ -12,30 +12,26 @@ public static partial class Solution2025
     public static (int, long) Day07(string? input = null)
     {
         var lines = input.AsSpan();
-        var line_enu = lines.Split('\n');
-        line_enu.MoveNext();
+        var length = lines.IndexOf('\n');
+        var stride = (length + 1) * 2;
 
-        var line = lines[line_enu.Current];
-        Span<long> curr = stackalloc long[line.Length];
-        Span<long> next = stackalloc long[line.Length];
+        Span<long> curr = stackalloc long[length];
+        Span<long> next = stackalloc long[length];
 
-        next.Clear();
-
-        for (int i = 0; i < line.Length; i++)
-            curr[i] = line[i] == 'S' ? 1 : 0;
-
+        curr[lines.IndexOf('S')] = 1;
+        
         int count = 0;
-        while (line_enu.MoveNext())
+        
+        do
         {
-            // line_enu.MoveNext();
+            lines = lines[stride..];
 
-            line = lines[line_enu.Current];
-            for (int i = 0; i < line.Length; i++)
+            for (int i = 0; i < length; i++)
             {
                 if (curr[i] == 0)
                     continue;
 
-                if (line[i] == '^')
+                if (lines[i] == '^')
                 {
                     next[i - 1] += curr[i];
                     next[i + 1] = curr[i] + curr[i + 1];
@@ -56,7 +52,7 @@ public static partial class Solution2025
             var temp = curr;
             curr = next;
             next = temp;
-        }
+        }while (lines.Length > stride);
 
         return (count, Day06_Sum(curr));
     }
