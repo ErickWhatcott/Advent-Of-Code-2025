@@ -7,12 +7,55 @@ namespace AdventOfCode;
 
 public static partial class Solution2025
 {
-    [Completed]
+    [TimePart]
     [DefineInput(InputType.FullInput)]
     public static (int, long) Day07(string? input = null)
     {
-        input ??= ReadFullInput();
-        return (Part1Day07(input), Part2Day07(input));
+        var lines = input.AsSpan();
+        var line_enu = lines.Split('\n');
+        line_enu.MoveNext();
+
+        var line = lines[line_enu.Current];
+        Span<long> curr = stackalloc long[line.Length];
+        Span<long> next = stackalloc long[line.Length];
+
+        next.Clear();
+
+        for (int i = 0; i < line.Length; i++)
+            curr[i] = line[i] == 'S' ? 1 : 0;
+
+        int count = 0;
+        long sum = 0;
+        while (line_enu.MoveNext())
+        {
+            line = lines[line_enu.Current];
+            for (int i = 0; i < line.Length; i++)
+            {
+                if (curr[i] > 0)
+                {
+                    if (line[i] == '^')
+                    {
+                        next[i - 1] += curr[i];
+                        next[i + 1] += curr[i];
+
+                        count++;
+                        sum += curr[i];
+                    }
+                    else
+                    {
+                        next[i] += curr[i];
+                    }
+
+                    curr[i] = 0;
+                }
+            }
+
+            var temp = curr;
+            curr = next;
+            next = temp;
+        }
+
+        return (count, sum);
     }
 
     public static int Part1Day07(string input)
