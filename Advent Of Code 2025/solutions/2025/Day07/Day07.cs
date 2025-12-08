@@ -7,7 +7,7 @@ namespace AdventOfCode;
 
 public static partial class Solution2025
 {
-    [TimePart]
+    [Completed]
     [DefineInput(InputType.FullInput)]
     public static (int, long) Day07(string? input = null)
     {
