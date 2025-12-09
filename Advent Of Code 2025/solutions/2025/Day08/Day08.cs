@@ -20,7 +20,7 @@ public static partial class Solution2025
         Span<int> parents = stackalloc int[length];
         Span<int> sizes = stackalloc int[length];
         UnionFind network = new(parents, sizes);
-        PriorityQueue<(int i, int j), double> queue = new(length * (length - 1) / 2);
+        PriorityQueue<(int i, int j), long> queue = new(length * (length - 1) / 2);
         Span<(int x, int y, int z)> nodes = stackalloc (int, int, int)[length];
         var line_enu = lines.Split('\n');
 
@@ -45,7 +45,7 @@ public static partial class Solution2025
             {
                 var (qx, qy, qz) = nodes[j];
                 var (dx, dy, dz) = ((long)x - qx, (long)y - qy, (long)z - qz);
-                var dist = Math.Sqrt((dx * dx) + (dy * dy) + (dz * dz));
+                var dist = (dx * dx) + (dy * dy) + (dz * dz);
                 queue.Enqueue((i, j), dist);
             }
 
@@ -117,7 +117,7 @@ public static partial class Solution2025
         Span<int> parents = stackalloc int[length];
         Span<int> sizes = stackalloc int[length];
         UnionFind network = new(parents, sizes);
-        PriorityQueue<(int i, int j), double> queue = new(max_iterations);
+        PriorityQueue<(int i, int j), long> queue = new(max_iterations);
         Span<(int x, int y, int z)> nodes = stackalloc (int, int, int)[length];
         var line_enu = lines.Split('\n');
 
@@ -142,7 +142,7 @@ public static partial class Solution2025
             {
                 var (qx, qy, qz) = nodes[j];
                 var (dx, dy, dz) = ((long)x - qx, (long)y - qy, (long)z - qz);
-                var dist = Math.Sqrt((dx * dx) + (dy * dy) + (dz * dz));
+                var dist = (dx * dx) + (dy * dy) + (dz * dz);
 
                 if (k < max_iterations)
                 {
@@ -157,14 +157,8 @@ public static partial class Solution2025
             i++;
         }
 
-        int iter = 0;
-        while (iter < max_iterations)
-        {
-            var value = queue.Dequeue();
-
+        while (queue.TryDequeue(out var value, out _))
             network.Union(value.i, value.j);
-            iter++;
-        }
 
         int max1 = 0;
         int max2 = 0;
@@ -205,7 +199,7 @@ public static partial class Solution2025
         Span<int> parents = stackalloc int[length];
         Span<int> sizes = stackalloc int[length];
         UnionFind network = new(parents, sizes);
-        PriorityQueue<(int i, int j), double> queue = new(length * (length - 1) / 2);
+        PriorityQueue<(int i, int j), long> queue = new(length * (length - 1) / 2);
         Span<(int x, int y, int z)> nodes = stackalloc (int, int, int)[length];
         var line_enu = lines.Split('\n');
 
@@ -230,7 +224,7 @@ public static partial class Solution2025
             {
                 var (qx, qy, qz) = nodes[j];
                 var (dx, dy, dz) = ((long)x - qx, (long)y - qy, (long)z - qz);
-                var dist = Math.Sqrt((dx * dx) + (dy * dy) + (dz * dz));
+                var dist = (dx * dx) + (dy * dy) + (dz * dz);
                 queue.Enqueue((i, j), dist);
             }
 

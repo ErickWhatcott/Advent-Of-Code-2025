@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 namespace AdventOfCode.Library;
 
 public ref struct UnionFind
@@ -42,6 +44,7 @@ public ref struct UnionFind
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int Find(int node)
     {
         int curr = node;
@@ -53,6 +56,7 @@ public ref struct UnionFind
         return curr;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Union(int x, int y)
     {
         var xp = Find(x);
@@ -69,6 +73,7 @@ public ref struct UnionFind
         _distinct--;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsConnected(int x, int y)
         => Find(x) == Find(y);
 }
