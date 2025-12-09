@@ -5,7 +5,7 @@ namespace AdventOfCode;
 
 public static partial class Solution2025
 {
-    [TimePart]
+    [Completed]
     [DefineInput(InputType.FullInput)]
     public static (int, long) Day08(string? input = null)
     {
@@ -103,7 +103,6 @@ public static partial class Solution2025
         return (p1, (long)nodes[value.x1].x * nodes[value.x2].x);
     }
 
-    [TimePart]
     public static int Part1Day08(string input)
     {
         var lines = input.AsSpan();
@@ -186,7 +185,6 @@ public static partial class Solution2025
         return max1 * max2 * max3;
     }
 
-    [TimePart]
     public static long Part2Day08(string input)
     {
         var lines = input.AsSpan();
