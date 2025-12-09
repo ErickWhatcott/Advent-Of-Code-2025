@@ -97,13 +97,12 @@ public static partial class Solution2025
         while (network.Distinct > 1)
         {
             value = queue.Dequeue();
-
             network.Union(value.x1, value.x2);
-            iter++;
         }
 
         Debug.Assert(p1 == Part1Day08(input));
         Debug.Assert(((long)nodes[value.x1].x * nodes[value.x2].x) == Part2Day08(input));
+
         return (p1, (long)nodes[value.x1].x * nodes[value.x2].x);
     }
 
@@ -121,7 +120,7 @@ public static partial class Solution2025
         Span<(int x, int y, int z)> nodes = stackalloc (int, int, int)[length];
         var line_enu = lines.Split('\n');
 
-        int i = 0, k = 0;
+        int i = 0;
         while (line_enu.MoveNext())
         {
             var line = lines[line_enu.Current];
@@ -138,13 +137,13 @@ public static partial class Solution2025
 
             nodes[i] = (x, y, z);
 
-            for (int j = 0; j < i; j++, k++)
+            for (int j = 0; j < i; j++)
             {
                 var (qx, qy, qz) = nodes[j];
                 var (dx, dy, dz) = ((long)x - qx, (long)y - qy, (long)z - qz);
                 var dist = (dx * dx) + (dy * dy) + (dz * dz);
 
-                if (k < max_iterations)
+                if (queue.Count < max_iterations)
                 {
                     queue.Enqueue((i, j), -dist);
                 }
@@ -234,13 +233,11 @@ public static partial class Solution2025
         i = 0;
         (int x, int y) value = default;
 
-        int iter = 0;
         while (network.Distinct > 1)
         {
             value = queue.Dequeue();
 
             network.Union(value.x, value.y);
-            iter++;
         }
 
         return (long)nodes[value.x].x * nodes[value.y].x;

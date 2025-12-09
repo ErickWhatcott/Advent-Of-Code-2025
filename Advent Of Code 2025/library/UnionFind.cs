@@ -74,6 +74,24 @@ public ref struct UnionFind
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool TryUnion(int x, int y)
+    {
+        var xp = Find(x);
+        var yp = Find(y);
+
+        if (xp == yp)
+            return false;
+
+        if (_size[xp] < _size[yp])
+            (xp, yp) = (yp, xp);
+
+        _parents[yp] = xp;
+        _size[xp] += _size[yp];
+        _distinct--;
+        return true;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool IsConnected(int x, int y)
         => Find(x) == Find(y);
 }
