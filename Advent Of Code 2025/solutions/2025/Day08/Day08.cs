@@ -24,7 +24,7 @@ public static partial class Solution2025
         Span<(int x, int y, int z)> nodes = stackalloc (int, int, int)[length];
         var line_enu = lines.Split('\n');
 
-        int i = 0, k = 0;
+        int i = 0;
         while (line_enu.MoveNext())
         {
             var line = lines[line_enu.Current];
@@ -41,7 +41,7 @@ public static partial class Solution2025
 
             nodes[i] = (x, y, z);
 
-            for (int j = 0; j < i; j++, k++)
+            for (int j = 0; j < i; j++)
             {
                 var (qx, qy, qz) = nodes[j];
                 var (dx, dy, dz) = ((long)x - qx, (long)y - qy, (long)z - qz);
@@ -55,48 +55,55 @@ public static partial class Solution2025
         i = 0;
         (int x1, int x2) value = default;
 
-        int p1 = -1;
         int iter = 0;
+
+        while (iter < max_iterations)
+        {
+            value = queue.Dequeue();
+
+            network.Union(value.x1, value.x2);
+            iter++;
+        }
+
+        int max1 = 0;
+        int max2 = 0;
+        int max3 = 0;
+
+        for (i = 0; i < length; i++)
+        {
+            if (parents[i] != i)
+                continue;
+
+            int size = sizes[i];
+            if (size > max1)
+            {
+                max3 = max2;
+                max2 = max1;
+                max1 = size;
+            }
+            else if (size > max2)
+            {
+                max3 = max2;
+                max2 = size;
+            }
+            else if (size > max3)
+            {
+                max3 = size;
+            }
+        }
+
+        int p1 = max1 * max2 * max3;
+
         while (network.Distinct > 1)
         {
             value = queue.Dequeue();
 
             network.Union(value.x1, value.x2);
             iter++;
-
-            if (iter == max_iterations)
-            {
-                int max1 = 0;
-                int max2 = 0;
-                int max3 = 0;
-
-                for (i = 0; i < length; i++)
-                {
-                    if (parents[i] != i)
-                        continue;
-
-                    int size = sizes[i];
-                    if (size > max1)
-                    {
-                        max3 = max2;
-                        max2 = max1;
-                        max1 = size;
-                    }
-                    else if (size > max2)
-                    {
-                        max3 = max2;
-                        max2 = size;
-                    }
-                    else if (size > max3)
-                    {
-                        max3 = size;
-                    }
-                }
-
-                p1 = max1 * max2 * max3;
-            }
         }
 
+        Debug.Assert(p1 == Part1Day08(input));
+        Debug.Assert(((long)nodes[value.x1].x * nodes[value.x2].x) == Part2Day08(input));
         return (p1, (long)nodes[value.x1].x * nodes[value.x2].x);
     }
 
@@ -137,10 +144,11 @@ public static partial class Solution2025
                 var (dx, dy, dz) = ((long)x - qx, (long)y - qy, (long)z - qz);
                 var dist = Math.Sqrt((dx * dx) + (dy * dy) + (dz * dz));
 
-                if(k < max_iterations)
+                if (k < max_iterations)
                 {
                     queue.Enqueue((i, j), -dist);
-                }else if(queue.TryPeek(out _, out var other_dist))
+                }
+                else if (queue.TryPeek(out _, out var other_dist))
                 {
                     queue.DequeueEnqueue((i, j), -dist);
                 }
@@ -201,7 +209,7 @@ public static partial class Solution2025
         Span<(int x, int y, int z)> nodes = stackalloc (int, int, int)[length];
         var line_enu = lines.Split('\n');
 
-        int i = 0, k = 0;
+        int i = 0;
         while (line_enu.MoveNext())
         {
             var line = lines[line_enu.Current];
@@ -218,7 +226,7 @@ public static partial class Solution2025
 
             nodes[i] = (x, y, z);
 
-            for (int j = 0; j < i; j++, k++)
+            for (int j = 0; j < i; j++)
             {
                 var (qx, qy, qz) = nodes[j];
                 var (dx, dy, dz) = ((long)x - qx, (long)y - qy, (long)z - qz);
