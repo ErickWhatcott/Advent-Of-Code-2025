@@ -5,7 +5,7 @@ namespace AdventOfCode.Library;
 public ref struct UnionFind
 {
     private int _distinct;
-    private int _count;
+    private readonly int _count;
     private Span<int> _parents;
     private Span<int> _size;
 
