@@ -1,7 +1,4 @@
 using System.Diagnostics;
-using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using AdventOfCode.Library;
 
 namespace AdventOfCode;
@@ -141,13 +138,13 @@ public static partial class Solution2025
             {
                 var (qx, qy, qz) = nodes[j];
                 var (dx, dy, dz) = ((long)x - qx, (long)y - qy, (long)z - qz);
-                var dist = (dx * dx) + (dy * dy) + (dz * dz);
+                var dist = -((dx * dx) + (dy * dy) + (dz * dz));
 
                 if (queue.Count < max_iterations)
                 {
                     queue.Enqueue((i, j), -dist);
                 }
-                else if (queue.TryPeek(out _, out var other_dist))
+                else if (queue.TryPeek(out _, out var other_dist) && -dist > other_dist)
                 {
                     queue.DequeueEnqueue((i, j), -dist);
                 }
