@@ -4,29 +4,29 @@
 // the working directory is the same.
 using System.ComponentModel;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using AdventOfCode;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Loggers;
 using BenchmarkDotNet.Running;
 using BenchmarkDotNet.Toolchains.InProcess.Emit;
-using BenchmarkDotNet.Toolchains.InProcess.NoEmit;
 
-const int depth = 4;
 string dir = AppContext.BaseDirectory;
-for (int i = 0; i < depth; i++) dir = Path.GetDirectoryName(dir)!;
-Directory.SetCurrentDirectory(dir);
+while (Path.GetFileName(dir) != "bin")
+    dir = Path.GetDirectoryName(dir)!;
+Directory.SetCurrentDirectory(Path.GetDirectoryName(dir)!);
 
 ConsoleColor color;
 int solution_length = "Solution".Length;
 foreach (var type in Assembly.GetExecutingAssembly().GetTypes().Where(a => a.Name.StartsWith("Solution")))
 {
-    if(type.Name.Length <= solution_length)
+    if (type.Name.Length <= solution_length)
         continue;
     string year = type.Name[solution_length..];
-    if(!int.TryParse(year, out var year_num))
+    if (!int.TryParse(year, out var year_num))
         continue;
-    
+
     var methods = type
         .GetMethods(BindingFlags.Public | BindingFlags.Static);
 
@@ -41,10 +41,10 @@ foreach (var type in Assembly.GetExecutingAssembly().GetTypes().Where(a => a.Nam
             continue;
 
 
-        if(v.GetCustomAttribute<RunAlwaysAttribute>() is not null
+        if (v.GetCustomAttribute<RunAlwaysAttribute>() is not null
             || v.GetCustomAttribute<CompletedAttribute>() is null)
         {
-            if(first)
+            if (first)
             {
                 first = false;
                 color = Console.ForegroundColor;
@@ -54,7 +54,37 @@ foreach (var type in Assembly.GetExecutingAssembly().GetTypes().Where(a => a.Nam
                 Console.WriteLine(new string('-', 19));
                 Console.ForegroundColor = color;
             }
-            
+
+            if (v.GetCustomAttribute<RequiresX64Attribute>() is not null
+                && RuntimeInformation.ProcessArchitecture == Architecture.Arm64)
+            {
+                color = Console.BackgroundColor;
+                Console.BackgroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine(new string('*', 19));
+                Console.WriteLine("*******IMPORTANT*******");
+                Console.WriteLine("This requires that you are on x64.");
+                Console.WriteLine("Add the following to your command:");
+
+                Console.BackgroundColor = ConsoleColor.Red;
+                Console.WriteLine("-r osx-x64");
+                Console.BackgroundColor = ConsoleColor.DarkRed;
+
+                Console.WriteLine(new string('*', 19));
+                Console.BackgroundColor = color;
+                Console.WriteLine("Do you want to skip this method (y to skip, n to exit)");
+
+                char c;
+                if (Console.IsInputRedirected)
+                    c = Console.ReadLine()?.FirstOrDefault('n') ?? 'n';
+                else
+                    c = Console.ReadKey().KeyChar;
+
+                if (c == 'y')
+                    continue;
+                else
+                    Environment.Exit(1);
+            }
+
             string? input = null;
             if (parameters == 1 && v.GetCustomAttribute<DefineInputAttribute>() is DefineInputAttribute ia)
                 input = Solution.TryReadInput(ia.File, year, v.Name);
@@ -64,7 +94,17 @@ foreach (var type in Assembly.GetExecutingAssembly().GetTypes().Where(a => a.Nam
             Console.WriteLine(new string('-', 19));
 
             color = Console.ForegroundColor;
-            var res = v.Invoke(null, input is null ? [] : [input]);
+            object? res = null;
+            try
+            {
+                res = v.Invoke(null, input is null ? [] : [input]);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+                Environment.Exit(1);
+            }
+
             Console.ForegroundColor = color;
             if (res is not null)
                 Console.WriteLine(res);
@@ -78,12 +118,12 @@ foreach (var type in Assembly.GetExecutingAssembly().GetTypes().Where(a => a.Nam
             ConfigOptions.StopOnFirstError |
             ConfigOptions.DisableLogFile
         )
-        .AddJob(Job.ShortRun.WithToolchain(InProcessEmitToolchain.Instance))
+        .AddJob(Job.ShortRun.WithToolchain(InProcessEmitToolchain.Instance).DontEnforcePowerPlan())
         .AddLogger(NullLogger.Instance);
 
     foreach (var v in methods.Where(a => a.GetCustomAttribute<TimePartAttribute>() is not null))
     {
-        if(first)
+        if (first)
         {
             first = false;
             color = Console.ForegroundColor;
@@ -115,6 +155,36 @@ foreach (var type in Assembly.GetExecutingAssembly().GetTypes().Where(a => a.Nam
         Console.WriteLine(new string('-', 19));
         Console.WriteLine($"--{v.Name} Benchmark--");
         Console.WriteLine(new string('-', 19));
+
+        if (v.GetCustomAttribute<RequiresX64Attribute>() is not null
+                && RuntimeInformation.ProcessArchitecture == Architecture.Arm64)
+        {
+            color = Console.BackgroundColor;
+            Console.BackgroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine(new string('*', 19));
+            Console.WriteLine("*******IMPORTANT*******");
+            Console.WriteLine("This requires that you are on x64.");
+            Console.WriteLine("Add the following to your command:");
+
+            Console.BackgroundColor = ConsoleColor.Red;
+            Console.WriteLine("-r osx-x64");
+            Console.BackgroundColor = ConsoleColor.DarkRed;
+
+            Console.WriteLine(new string('*', 19));
+            Console.BackgroundColor = color;
+            Console.WriteLine("Do you want to skip this method (y to skip, n to exit)");
+
+            char c;
+            if (Console.IsInputRedirected)
+                c = Console.ReadLine()?.FirstOrDefault('n') ?? 'n';
+            else
+                c = Console.ReadKey().KeyChar;
+
+            if (c == 'y')
+                continue;
+            else
+                Environment.Exit(1);
+        }
 
 #if DEBUG
         color = Console.ForegroundColor;
