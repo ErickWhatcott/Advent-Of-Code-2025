@@ -16,7 +16,7 @@ public static partial class Solution2025
 {
     // (this is commented out so it will run Part 1 still instead of throwing)
     // [RequiresX64]
-    // [Completed]
+    [Completed]
     [DefineInput(InputType.FullInput)]
     public static (long, long) Day10(string? input = null)
     {
@@ -27,7 +27,6 @@ public static partial class Solution2025
             return (Part1Day10(input), Part2Day10(input));
     }
 
-    [TimePart]
     public static unsafe long Part1Day10(string input)
     {
         // Size represents the largest number of values that can be handled.
