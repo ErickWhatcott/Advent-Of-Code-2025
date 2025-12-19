@@ -2,7 +2,7 @@ namespace AdventOfCode;
 
 public static partial class Solution2021
 {
-    [TimePart]
+    [Completed]
     [DefineInput(InputType.FullInput)]
     public static (long, long) Day06(string? input = null)
     {
@@ -10,7 +10,6 @@ public static partial class Solution2021
         return (Part1Day06(input), Part2Day06(input));
     }
 
-    [TimePart]
     public static long Part1Day06(string input)
     {
         checked
@@ -37,7 +36,6 @@ public static partial class Solution2021
         }
     }
 
-    [TimePart]
     public static long Part2Day06(string input)
     {
         checked
