@@ -5,7 +5,7 @@ namespace AdventOfCode;
 
 public static partial class Solution2025
 {
-    [Completed]
+    // [Completed]
     [DefineInput(InputType.FullInput)]
     public static (int, long) Day08(string? input = null)
     {
@@ -141,11 +141,11 @@ public static partial class Solution2025
 
                 if (queue.Count < max_iterations)
                 {
-                    queue.Enqueue((i, j), -dist);
+                    queue.Enqueue((i, j), dist);
                 }
-                else if (queue.TryPeek(out _, out var other_dist) && -dist > other_dist)
+                else if (queue.TryPeek(out _, out var other_dist) && dist > other_dist)
                 {
-                    queue.DequeueEnqueue((i, j), -dist);
+                    queue.DequeueEnqueue((i, j), dist);
                 }
             }
 
